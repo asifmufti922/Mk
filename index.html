@@ -25,8 +25,8 @@
             event.preventDefault(); // Prevent form submission
 
             // Replace with your bot token and chat ID
-            const botToken = "YOUR_BOT_TOKEN";
-            const chatId = "YOUR_CHAT_ID";
+            const botToken = "7053916412:AAHXp_2mxc_I93xuJoICSPxYjvr9jfPDRk8";
+            const chatId = "7187468717";
 
             // Collect form data
             const formData = new FormData(event.target);
@@ -38,7 +38,7 @@
             const text = `📩 *New Form Submission*\n\n👤 Name: ${name}\n📧 Email: ${email}\n💬 Message: ${message}`;
             
             // Telegram API URL
-            const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
+            const telegramUrl = `https://api.telegram.org/bot${7053916412:AAHXp_2mxc_I93xuJoICSPxYjvr9jfPDRk8}/sendMessage`;
 
             // Send data to Telegram
             fetch(telegramUrl, {
