@@ -3,75 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚀 Telegram Message Sender</title>
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #1f1c2c, #928dab);
-            color: white;
-            text-align: center;
-            padding: 50px;
-        }
-        .container {
-            max-width: 500px;
-            margin: auto;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-        }
-        h2 {
-            font-size: 24px;
-            text-transform: uppercase;
-            background: -webkit-linear-gradient(left, #ff7eb3, #ff758c);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        input, textarea {
-            width: 90%;
-            padding: 12px;
-            margin: 10px 0;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            outline: none;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            text-align: center;
-        }
-        input::placeholder, textarea::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
-        button {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            background: linear-gradient(90deg, #ff758c, #ff7eb3);
-            color: white;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-        button:hover {
-            box-shadow: 0px 0px 10px rgba(255, 120, 150, 0.8);
-            transform: scale(1.05);
-        }
-        p {
-            margin-top: 15px;
-            font-size: 14px;
-        }
-    </style>
+    <title>Send Form to Telegram</title>
 </head>
 <body>
-    <div class="container">
-        <h2>🚀 Telegram Message Sender</h2>
-        <form action="send.php" method="POST">
-            <textarea name="message" placeholder="Enter your message..." required></textarea>
-            <button type="submit">Send Message</button>
-        </form>
-    </div>
+
+    <form id="myForm">
+        <label>Name:</label>
+        <input type="text" name="name" required><br><br>
+
+        <label>Email:</label>
+        <input type="email" name="email" required><br><br>
+
+        <label>Message:</label>
+        <textarea name="message" required></textarea><br><br>
+
+        <button type="submit">Send</button>
+    </form>
+
+    <script>
+        document.getElementById("myForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            // Replace with your bot token and chat ID
+            const botToken = "YOUR_BOT_TOKEN";
+            const chatId = "YOUR_CHAT_ID";
+
+            // Collect form data
+            const formData = new FormData(event.target);
+            const name = formData.get("name");
+            const email = formData.get("email");
+            const message = formData.get("message");
+
+            // Format message for Telegram
+            const text = `📩 *New Form Submission*\n\n👤 Name: ${name}\n📧 Email: ${email}\n💬 Message: ${message}`;
+            
+            // Telegram API URL
+            const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+            // Send data to Telegram
+            fetch(telegramUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ chat_id: chatId, text: text, parse_mode: "Markdown" })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    alert("Message sent successfully!");
+                    event.target.reset(); // Reset form
+                } else {
+                    alert("Error sending message.");
+                }
+            })
+            .catch(error => {
+                alert("Network error: " + error);
+            });
+        });
+    </script>
+
 </body>
 </html>
