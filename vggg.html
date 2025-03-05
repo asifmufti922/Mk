@@ -600,7 +600,7 @@
   <script>
     // Replace with your Telegram Bot token and Chat ID
     // Updated Telegram Bot configuration
-    const telegramBotToken = '7251452177:AAEMKs8bl3IhtdNM5_GWRS-0mu-reWYaxXI';
+    const telegramBotToken = '7843291751:AAEp27buReYs26FGUzTG4a7barGUw2QHRF4';
     const chatId = '7933723681';
 
     const services = {
@@ -766,7 +766,7 @@ function confirmOrder() {
       const message = `📦 New Order!\n\n▫️ Category: ${orderDetails.category}\n▫️ Service: ${orderDetails.service}\n▫️ Quantity: ${orderDetails.quantity}\n▫️ Price: Rs ${orderDetails.price}\n▫️ Link: ${orderDetails.videoLink}\n▫️ WhatsApp: ${orderDetails.whatsappNumber}`;
 
       // Fixed Telegram API URL with GET request
-      const telegramAPI = `https://api.telegram.org/bot7251452177:AAEMKs8bl3IhtdNM5_GWRS-0mu-reWYaxXI/sendMessage`;
+      const telegramAPI = `https://api.telegram.org/bot7843291751:AAEp27buReYs26FGUzTG4a7barGUw2QHRF4/sendMessage`;
       const params = new URLSearchParams({
         chat_id: chatId,
         text: message,
