@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HMA X TARAV TIGER</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: black; color: white; }
+        .box { margin: auto; padding: 20px; width: 50%; background-color: #222; border-radius: 10px; box-shadow: 0 0 10px cyan; }
+        input, button { display: block; margin: 10px auto; padding: 10px; width: 80%; }
+        button { background: cyan; color: black; border: none; cursor: pointer; }
+        .hidden { display: none; }
+        #errorEffect { background-color: red; color: yellow; font-size: 20px; animation: glitch 0.2s infinite; }
+        @keyframes glitch { 0% { transform: skewX(0deg); } 50% { transform: skewX(10deg); } 100% { transform: skewX(0deg); } }
+    </style>
+</head>
+<body>
+    <!-- Admin Login -->
+    <div class="box" id="loginBox">
+        <h2>Admin Login</h2>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">Login</button>
+    </div>
+
+    <!-- Admin Panel -->
+    <div class="box hidden" id="adminPanel">
+        <h2>Welcome Admin</h2>
+        <input type="text" id="url" placeholder="Enter URL">
+        <input type="password" id="setPassword" placeholder="Set Password">
+        <button onclick="generateLink()">Generate Link</button>
+        <p>Protected Link: <span id="protectedLink"></span></p>
+    </div>
+
+    <!-- User Password Page -->
+    <div class="box hidden" id="userBox">
+        <h1>HMA X TARAV TIGER</h1>
+        <input type="password" id="userPassword" placeholder="Enter Password">
+        <button onclick="checkPassword()">Submit</button>
+    </div>
+
+    <!-- Error Effect -->
+    <div id="errorEffect" class="hidden">
+        <h1>⚠️ WARNING! ⚠️</h1>
+        <p>Galat password mat lagao! Channel par jao, video dekho aur sahi password lagao.</p>
+    </div>
+
+    <audio id="scarySound" src="scary.mp3"></audio>
+
+    <script>
+        function login() {
+            let user = document.getElementById("username").value;
+            let pass = document.getElementById("password").value;
+            if (user === "hma" && pass === "hma922") {
+                document.getElementById("loginBox").style.display = "none";
+                document.getElementById("adminPanel").style.display = "block";
+            } else {
+                alert("Wrong Credentials!");
+            }
+        }
+
+        function generateLink() {
+            let url = document.getElementById("url").value;
+            let password = document.getElementById("setPassword").value;
+            if (url && password) {
+                let uniqueID = Math.random().toString(36).substr(2, 8); // Generate random ID
+                localStorage.setItem(uniqueID, JSON.stringify({ url: url, password: password }));
+                let protectedLink = `${window.location.origin}${window.location.pathname}?id=${uniqueID}`;
+                document.getElementById("protectedLink").innerHTML = `<a href="${protectedLink}">${protectedLink}</a>`;
+            } else {
+                alert("Enter both URL and Password!");
+            }
+        }
+
+        function checkPassword() {
+            let urlParams = new URLSearchParams(window.location.search);
+            let uniqueID = urlParams.get("id");
+            let storedData = JSON.parse(localStorage.getItem(uniqueID));
+
+            if (!storedData) {
+                alert("Invalid Link!");
+                return;
+            }
+
+            let enteredPassword = document.getElementById("userPassword").value;
+            if (enteredPassword === storedData.password) {
+                window.location.href = storedData.url;
+            } else {
+                document.getElementById("userBox").style.display = "none";
+                document.getElementById("errorEffect").classList.remove("hidden");
+
+                let audio = document.getElementById("scarySound");
+                audio.play();
+
+                setTimeout(() => {
+                    window.location.href = "https://www.google.com";
+                }, 5000);
+            }
+        }
+
+        window.onload = function() {
+            let urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has("id")) {
+                document.getElementById("loginBox").style.display = "none";
+                document.getElementById("userBox").classList.remove("hidden");
+            }
+        }
+    </script>
+</body>
+</html>
